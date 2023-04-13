@@ -8,28 +8,56 @@ class App extends Component() {
     super()
 
     this.state = {
-      books: [
-        { name: 'Atomic Habits', id: '12e1231e' },
-        {
-          name: 'The 48 Laws of Power',
-          id: '12edaawe98',
-        },
-        {
-          name: 'Verity',
-          id: 'yew8w98w',
-        },
-        {
-          name: 'The Silent Patient',
-          id: '23ioj34h',
-        },
-      ],
+      books: [],
+      searchField: '',
     }
+    console.log('1')
+  }
+
+  componentDidMount() {
+    console.log('3')
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((users) =>
+        this.setState(
+          () => {
+            return { books: users }
+          },
+          () => {
+            console.log(this.state)
+          }
+        )
+      )
   }
 
   render() {
+    console.log('render')
+
+    const filteredBooks = this.state.books.filter((book) => {
+      return book.name.toLocaleLowerCase().include(this.state.searchField)
+    })
+
     return (
       <div className='App'>
-        {this.state.books.map((books) => {
+        <input
+          className='search-box'
+          type='search'
+          placeholder='search books'
+          onChange={(event) => {
+            console.log({ startingArray: this.state.books })
+            const searchField = event.target.value.toLocaleLowerCase()
+
+            this.setState(
+              () => {
+                return { searchField }
+              },
+              () => {
+                console.log({ endingArray: this.state.books })
+              }
+            )
+          }}
+        />
+        {filteredBooks.map((books) => {
           return (
             <div key={books.id}>
               <h1>{books.name}</h1>
