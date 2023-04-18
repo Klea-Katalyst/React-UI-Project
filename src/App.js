@@ -1,9 +1,10 @@
 import { Component } from 'react'
 
-import logo from './logo.svg'
+import CardList from './components/card-list/card-list.component'
+import SearchBox from './components/search-box/search-box.component'
 import './App.css'
 
-class App extends Component() {
+class App extends Component {
   constructor() {
     super()
 
@@ -11,59 +12,41 @@ class App extends Component() {
       books: [],
       searchField: '',
     }
-    console.log('1')
   }
 
   componentDidMount() {
-    console.log('3')
     fetch('https://jsonplaceholder.typicode.com/users')
       .then((response) => response.json())
       .then((users) =>
-        this.setState(
-          () => {
-            return { books: users }
-          },
-          () => {
-            console.log(this.state)
-          }
-        )
+        this.setState(() => {
+          return { books: users }
+        })
       )
   }
 
-  render() {
-    console.log('render')
+  onSearchChang = (event) => {
+    const searchField = event.target.value.toLocaleLowerCase()
+    this.state(() => {
+      return { searchField }
+    })
+  }
 
-    const filteredBooks = this.state.books.filter((book) => {
-      return book.name.toLocaleLowerCase().include(this.state.searchField)
+  render() {
+    const { books, searchField } = this.state
+    const { onSearchChange } = this
+
+    const filteredBooks = books.filter((book) => {
+      return book.name.toLocaleLowerCase().includes(searchField)
     })
 
     return (
       <div className='App'>
-        <input
-          className='search-box'
-          type='search'
+        <SearchBox
+          className='books-search-box'
+          onChangeHandler={onSearchChange}
           placeholder='search books'
-          onChange={(event) => {
-            console.log({ startingArray: this.state.books })
-            const searchField = event.target.value.toLocaleLowerCase()
-
-            this.setState(
-              () => {
-                return { searchField }
-              },
-              () => {
-                console.log({ endingArray: this.state.books })
-              }
-            )
-          }}
         />
-        {filteredBooks.map((books) => {
-          return (
-            <div key={books.id}>
-              <h1>{books.name}</h1>
-            </div>
-          )
-        })}
+        <CardList books={filteredBooks} />
       </div>
     )
   }
