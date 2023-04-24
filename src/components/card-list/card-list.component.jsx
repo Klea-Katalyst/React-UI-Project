@@ -4,11 +4,11 @@ import Card from '../card/card.component'
 
 class CardList extends Component {
   render() {
-    const { books } = this.props
+    const { monsters } = this.props
     return (
       <div className='card-list'>
-        {books.map((book) => {
-          return <Card book={book} />
+        {monsters.map((monster) => {
+          return <Card monster={monster} />
         })}
       </div>
     )
